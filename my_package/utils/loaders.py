@@ -41,16 +41,43 @@ class SeriesLoaderFromCSV:
         
         return label
     
-class MappingLoadersFromNumpy:
-    def __init__(self, files_dir):
-        self.files_dir = files_dir
-        self.series_files = sorted(os.listdir(files_dir))
+class MappingLoadersFromCSV:
+    def __init__(self, series_dir):
+        self.series_dir = series_dir
+        self.series_files = sorted(os.listdir(series_dir))
 
     def __len__(self):
         return len(self.series_files)
     
-    def __getitem__(self, key):
-        pass
+    def __getitem__(self, idx):
+        series_filename = self.series_files[idx]
+        series_path = os.path.join(self.series_dir, series_filename)
+
+        try:
+            series = pd.read_csv(series_path, sep=',')
+        except Exception as e:
+            print(e, f"Skipped file: {series_path}")
+            return self.__getitem__((idx + 1) % len(self))
+
+        return self._convert_df_in_mapping(series)
+
+    # def __iter__(self):
+    #     return self.__next__()
+
+    # def __next__(self):
+    #     for series_filename in self.series_files:
+    #         series_path = os.path.join(self.series_dir, series_filename)
+    #         df = pd.read_csv(series_path) # сюда бы тоже передовать инфу о файле, например разделить
+    #         return self._convert_df_in_mapping(df) # Скорее всего нужно возвращать не только mapping, но и инфу про файл
+
+    def _convert_df_in_mapping(self, df:pd.DataFrame): # подразумевается, что y ненормаилизован. Это не гибко. Возможно, чтоит создать класс SeriasFile
+        x = df.iloc[0:-1, 0]
+        y = df.iloc[0:-1, 1]
+        condition_normalize = False
+
+        mapping = Mapping(x, y, condition_normalize)
+        return mapping
+    
 
 class PipelineLoader: # добавить аннотацию о работе цепи
     def __init__(self, series_time:Mapping, pipeline:StructurePipelineApproximation):
@@ -63,8 +90,8 @@ class PipelineLoader: # добавить аннотацию о работе це
         count_nodes = list((self.pipeline).keys())
         return len(count_nodes)
     
-    def __getitem__(self, key):
-        now_section_title = list((self.pipeline).keys())[key]
+    def __getitem__(self, idx):
+        now_section_title = list((self.pipeline).keys())[idx]
         tags_section = (self.pipeline)[now_section_title]
 
         local_func = tags_section['function']

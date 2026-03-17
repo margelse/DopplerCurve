@@ -1,14 +1,19 @@
-import pandas as pd
 import os
+
+# TODO
+# разделить входные параметры LoaderCSVFilesObject на 2 класса: 1 - инфа про файлы (разделитель, расширение и тд), 2 - инфа про данные (нормализованные и тд)
+
 
 class LoaderCSVFilesObject:
     def __init__(
             self,
             directory,
             separation:str,
+            condition_normalize_dependent_values:bool
     ):
         self.directory = directory
         self.separation = separation
+        self.condition_normalize_dependent_values = condition_normalize_dependent_values
 
         self._init_sorted_files()
 
@@ -37,6 +42,9 @@ class LoaderCSVFilesObject:
                 delete_files.append(path)
 
         return valid_file_paths, delete_files
+    
+    def get_valid_paths(self):
+        return (self.valid_file_paths).copy()
     
     def description(self):
         TEMPLATE = {

@@ -43,38 +43,28 @@ class SeriesLoaderFromCSV:
         return label
     
 class MappingLoadersFromCSV:
-    def __init__(self, series_dir):
-        self.series_dir = series_dir
-        self.series_files = sorted(os.listdir(series_dir))
+    def __init__(self, loader_object:LoaderCSVFilesObject):
+        self.loader_object = loader_object
+        self.file_paths = self.loader_object.get_valid_paths()
 
     def __len__(self):
-        return len(self.series_files)
+        return len(self.file_paths)
     
     def __getitem__(self, idx):
-        series_filename = self.series_files[idx]
-        series_path = os.path.join(self.series_dir, series_filename)
+        path = self.file_paths[idx]
 
         try:
-            series = pd.read_csv(series_path, sep=',')
+            series = pd.read_csv(path, sep=(self.loader_object).separation, index_col=0)
         except Exception as e:
-            print(e, f"Skipped file: {series_path}")
+            print(e, f"Skipped file: {path}")
             return self.__getitem__((idx + 1) % len(self))
 
         return self._convert_df_in_mapping(series)
 
-    # def __iter__(self):
-    #     return self.__next__()
-
-    # def __next__(self):
-    #     for series_filename in self.series_files:
-    #         series_path = os.path.join(self.series_dir, series_filename)
-    #         df = pd.read_csv(series_path) # сюда бы тоже передовать инфу о файле, например разделить
-    #         return self._convert_df_in_mapping(df) # Скорее всего нужно возвращать не только mapping, но и инфу про файл
-
-    def _convert_df_in_mapping(self, df:pd.DataFrame): # подразумевается, что y ненормаилизован. Это не гибко. Возможно, чтоит создать класс SeriasFile
+    def _convert_df_in_mapping(self, df:pd.DataFrame):
         x = df.iloc[0:-1, 0]
         y = df.iloc[0:-1, 1]
-        condition_normalize = False
+        condition_normalize = (self.loader_object).condition_normalize_dependent_values
 
         mapping = Mapping(x, y, condition_normalize)
         return mapping

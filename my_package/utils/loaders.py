@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from ..data_structurs.base import Mapping
 from ..data_structurs.approximation import StructurePipelineApproximation
+from ..data_structurs.loaders import LoaderCSVFilesObject
 
 class SeriesLoaderFromCSV:
     def __init__(self, series_dir):

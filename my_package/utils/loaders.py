@@ -82,14 +82,15 @@ class PipelineLoader: # добавить аннотацию о работе це
         return len(count_nodes)
     
     def __getitem__(self, idx):
-        now_section_title = list((self.pipeline).keys())[idx]
-        tags_section = (self.pipeline)[now_section_title]
+        section_title = list((self.pipeline).keys())[idx]
+        tags_section = (self.pipeline)[section_title]
 
-        local_func = tags_section['function']
-        local_mapping = self._get_local_mapping(tags_section['section'])
-        local_parametres = tags_section['parametres']
+        func = tags_section['function']
+        mapping = self._get_local_mapping(tags_section['section'])
+        parametres = tags_section['parametres']
+        bound_parametres = tags_section['bounds']
 
-        return local_func, local_mapping, local_parametres
+        return func, mapping, parametres, bound_parametres
 
     def _get_local_mapping(self, bounds):
         x = (self.series_time).get_x()

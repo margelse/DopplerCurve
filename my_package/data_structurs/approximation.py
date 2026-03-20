@@ -9,13 +9,15 @@ class StructurePipelineApproximation:
             names_node:list,
             functions: list,
             values_sections:List[List],
-            values_parametres:list[Tuple]
+            values_parametres:List[Tuple],
+            bounds:List[Tuple[List]]
     ):
         self.names_node = names_node
 
         self.functions = functions
         self.values_sections = values_sections
         self.values_parametres = values_parametres
+        self.bounds = bounds
 
         self._check_size()
 
@@ -25,11 +27,12 @@ class StructurePipelineApproximation:
         
     def get_pipeline(self):
         new_pipeline = dict()
-        for name, func, section, parametres in zip(self.names_node, self.functions, self.values_sections, self.values_parametres):
+        for name, func, section, parametres, bound in zip(self.names_node, self.functions, self.values_sections, self.values_parametres, self.bounds):
             new_pipeline[name] = {
                 'function': func,
                 'section': section,
-                'parametres': parametres
+                'parametres': parametres,
+                'bounds': bound
             }
 
         return new_pipeline

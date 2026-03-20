@@ -34,21 +34,22 @@ def search_most_viable_parametres(
         function_approximation,
         mapping:Mapping,
         init_parametres:tuple,
-        new_condition_normalize:bool
+        bounds: tuple,
+        condition_normalize_for_approx:bool
 ):
     x, y, _ = _unpacking_mapping(mapping)
 
-    if new_condition_normalize:
+    if condition_normalize_for_approx:
         y = _normalize_values(y)
 
     try:
-        popt, _ = curve_fit(function_approximation, x, y, method='trf', p0=init_parametres, maxfev=10000)
+        popt, _ = curve_fit(function_approximation, x, y, method='trf', p0=init_parametres, bounds=bounds, maxfev=10000)
     except Exception as e:
-        print(e)
+        raise(e)
 
     y_approx = function_approximation(x, *popt)
 
-    mapping_approx = Mapping(x, y_approx, new_condition_normalize)
+    mapping_approx = Mapping(x, y_approx, condition_normalize_for_approx)
     result = ResultsApproximatingFunction(
         mapping,
         mapping_approx,

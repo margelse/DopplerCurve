@@ -4,6 +4,7 @@ from ..data_structurs.base import Mapping
 class MinMaxNormalize:
     def __init__(self, values_start):
         self.values_start = values_start
+        
         self.max_value = np.max(self.values_start)
         self.min_value = np.min(self.values_start)
 

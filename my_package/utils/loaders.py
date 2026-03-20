@@ -73,7 +73,7 @@ class MappingLoadersFromCSV:
 class PipelineLoader: # добавить аннотацию о работе цепи
     def __init__(self, series_time:Mapping, pipeline:StructurePipelineApproximation):
         self.series_time = series_time
-        self.pipeline = pipeline
+        self.pipeline = pipeline.get_pipeline()
 
         self.description = {}
 
@@ -98,7 +98,7 @@ class PipelineLoader: # добавить аннотацию о работе це
         condition_normalize = (self.series_time).condition_normalize
 
         start = np.searchsorted(x, bounds[0], side='left')
-        end = np.searchsorted(x, bounds[1], side='right') - 1
+        end = np.searchsorted(x, bounds[1], side='left')
 
         local_mapping = Mapping(
             np.copy(x[start:end]),

@@ -37,8 +37,8 @@ def inverse_exponential(x, coef_peak, b, free_term):
 
     return inverse_exp + free_term
 
-def normal_distribution(x, coef_peak, b, d, free_term):
-    norm_distrib = coef_peak * np.exp(-(x - b)**2 / d**2)
+def normal_distribution(x, coef_peak, mu, sigma, free_term):
+    norm_distrib = coef_peak * (np.exp(-((x - mu)**2) / (2 * sigma**2)) / (sigma * np.sqrt(2 * np.pi)))
 
     return norm_distrib + free_term
 

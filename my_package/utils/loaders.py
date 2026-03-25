@@ -19,28 +19,18 @@ class SeriesLoaderFromCSV:
 
         try:
             series = pd.read_csv(series_path, sep=',')
+            label = self._get_label_from_path(series_path)
         except Exception as e:
             print(e, f"Skipped file: {series_path}")
             return self.__getitem__((idx + 1) % len(self))
         
-        label = self._extract_label(series_filename)
-        
-        return series, label
+        return label, series
     
-    def _extract_label(self, filename):
-        """
-        
-        Извлекает метку из имени файла.
-        Пример: **/Larin^Sergey_ICA LS_270425-202349_7.csv -> Larin^Sergey_ICA LS
-        
-        """
-        name_without_ext = os.path.splitext(filename)[0]
-        parts = name_without_ext.split('_')
-        label_parts = parts[:-2]
-        
-        label = '_'.join(label_parts)
-        
-        return label
+    def _get_label_from_path(self, path):
+        file = os.path.basename(path)
+        name = os.path.splitext(file)[0]
+
+        return name
     
 class MappingLoadersFromCSV:
     def __init__(self, loader_object:LoaderCSVFilesObject):
@@ -55,11 +45,12 @@ class MappingLoadersFromCSV:
 
         try:
             series = pd.read_csv(path, sep=(self.loader_object).separation, index_col=0)
+            label = self._get_label_from_path(path)
         except Exception as e:
             print(e, f"Skipped file: {path}")
             return self.__getitem__((idx + 1) % len(self))
 
-        return self._convert_df_in_mapping(series)
+        return label, self._convert_df_in_mapping(series)
 
     def _convert_df_in_mapping(self, df:pd.DataFrame):
         x = df.iloc[0:-1, 0]
@@ -68,6 +59,12 @@ class MappingLoadersFromCSV:
 
         mapping = Mapping(x, y, condition_normalize)
         return mapping
+
+    def _get_label_from_path(self, path):
+        file = os.path.basename(path)
+        name = os.path.splitext(file)[0]
+
+        return name
     
 
 class PipelineLoader: # добавить аннотацию о работе цепи

@@ -35,11 +35,11 @@ def search_most_viable_parametres(
         mapping:Mapping,
         init_parametres:tuple,
         bounds: tuple,
-        condition_normalize_for_approx:bool
+        condition_normalize_for_approx:bool # убрать параметр
 ):
     x, y, _ = _unpacking_mapping(mapping)
 
-    if condition_normalize_for_approx:
+    if condition_normalize_for_approx: # убрать нормализацию
         y = _normalize_values(y)
 
     try:

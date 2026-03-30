@@ -50,7 +50,7 @@ class MappingPreprocessingForApproximation(MinMaxNormalize):
         self._check_condition_normalize()
         return super().normalize()
     
-    def _check_condition_normalize(self): # Сделать нормальный raise
+    def _check_condition_normalize(self):
         if self.condition_normalize:
             raise(ValueError('The data is already normalized'))
     

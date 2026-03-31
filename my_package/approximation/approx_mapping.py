@@ -1,9 +1,14 @@
+from typing import List, Tuple, Callable
+
 import numpy as np
 import pandas as pd
+
 from scipy.optimize import curve_fit
+from scipy.ndimage import uniform_filter1d
+
 from ..data_structurs.base import Mapping
 from ..data_structurs.approximation import ResultsApproximatingFunction
-from ..utils.preprocessing import MinMaxNormalize, MappingPreprocessingForApproximation
+from ..utils.preprocessing import MappingPreprocessingForApproximation
 from ..utils.visualization import VisualizationPlots
     
 # ---------------------------------------------------------------------------------------------------------------------
@@ -14,7 +19,7 @@ def preprocessing_pipeline(mapping:Mapping):
     if not mapping_processing_start.check_none():
         x_without_zero = mapping_processing_start.retreat_from_zero()
     else:
-        return None
+        raise(ValueError('There are None values'))
     
     y = mapping_processing_start.y
 
@@ -22,26 +27,19 @@ def preprocessing_pipeline(mapping:Mapping):
 
     return mapping_result
 
-def _normalize_values(values):
-    normalize_func = MinMaxNormalize(values)
-    normalize_y = normalize_func.normalize()
-    return normalize_y
-
-def _unpacking_mapping(mapping:Mapping):
-    return mapping.get_x(), mapping.get_y(), mapping.condition_normalize
+# def _normalize_values(values):
+#     normalize_func = MinMaxNormalize(values)
+#     normalize_y = normalize_func.normalize()
+#     return normalize_y
 
 def search_most_viable_parametres(
-        function_approximation,
+        function_approximation:Callable,
         mapping:Mapping,
         init_parametres:tuple,
-        bounds: tuple,
-        condition_normalize_for_approx:bool
+        bounds: Tuple[List]
 ):
-    x, y, _ = _unpacking_mapping(mapping)
-
-    if condition_normalize_for_approx:
-        y = _normalize_values(y)
-
+    x, y, condition_normalize = _unpacking_mapping(mapping)
+    
     try:
         popt, _ = curve_fit(function_approximation, x, y, method='trf', p0=init_parametres, bounds=bounds, maxfev=10000)
     except Exception as e:
@@ -49,25 +47,28 @@ def search_most_viable_parametres(
 
     y_approx = function_approximation(x, *popt)
 
-    mapping_approx = Mapping(x, y_approx, condition_normalize_for_approx)
+    mapping_approx = Mapping(x, y_approx, condition_normalize)
     result = ResultsApproximatingFunction(
         mapping,
         mapping_approx,
         function_approximation,
-        popt
+        popt,
+        bounds
     )
     return result
 
+def _unpacking_mapping(mapping:Mapping):
+    return mapping.get_x(), mapping.get_y(), mapping.condition_normalize
+
 
 def get_description_about_results_approximation(
-        result_approximating:ResultsApproximatingFunction,
-        metrics:dict
+        result_approximating:ResultsApproximatingFunction
 ):
-    print('Values metrics: \n')
-    print(result_approximating.metrix_values_show(metrics))
-
-    print('Values MVP: \n')
+    print('Values MVP:')
     print(result_approximating.parametres_show())
+
+    print('Bounds:')
+    print(result_approximating.bounds_parametres_show())
 
 def print_plots_results(
         result_approximating:ResultsApproximatingFunction,
@@ -80,3 +81,12 @@ def print_plots_results(
         y_approx = result_approximating.y_approx_denormalize
 
     visualization_result.create_plot([x, x], [y, y_approx], ['start line', 'approx line'])
+
+def uniform_filter1d_for_mapping(mapping:Mapping, size_window:int):
+    smooth_mapping = Mapping(
+        mapping.get_x(),
+        uniform_filter1d(mapping.get_y(), size=size_window),
+        mapping.condition_normalize
+    )
+
+    return smooth_mapping

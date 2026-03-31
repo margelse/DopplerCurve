@@ -1,6 +1,6 @@
 from .visualization import VisualizationPlots
 from .loaders import PipelineLoader, SeriesLoaderFromCSV, MappingLoadersFromCSV
-from .preprocessing import MinMaxNormalize, MappingPreprocessingForApproximation
+from .preprocessing import MinMaxNormalize, MappingPreprocessingForApproximation, MinMaxNormalizeForMappings
 
 __all__ = [
     'VisualizationPlots', # from visualization.py
@@ -8,5 +8,6 @@ __all__ = [
     'SeriesLoaderFromCSV',
     'MappingLoadersFromCSV',
     'MinMaxNormalize', # from preprocessing.py
+    'MinMaxNormalizeForMappings',
     'MappingPreprocessingForApproximation'
 ]

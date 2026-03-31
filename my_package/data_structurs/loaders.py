@@ -1,17 +1,17 @@
 import os
 
 # TODO
-# разделить входные параметры LoaderCSVFilesObject на 2 класса: 1 - инфа про файлы (разделитель, расширение и тд), 2 - инфа про данные (нормализованные и тд)
+# разделить входные параметры CSVFilesObject на 2 класса: 1 - инфа про файлы (разделитель, расширение и тд), 2 - инфа про данные (нормализованные и тд)
 
 
-class LoaderCSVFilesObject:
+class CSVFilesObject:
     def __init__(
             self,
-            directory,
+            directory:str,
             separation:str,
             condition_normalize_dependent_values:bool
     ):
-        self.directory = directory
+        self.directory = rf'{directory}'
         self.separation = separation
         self.condition_normalize_dependent_values = condition_normalize_dependent_values
 

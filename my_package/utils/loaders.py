@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from ..data_structurs.base import Mapping
 from ..data_structurs.approximation import StructurePipelineApproximation
-from ..data_structurs.loaders import LoaderCSVFilesObject
+from ..data_structurs.loaders import CSVFilesObject
 
 class SeriesLoaderFromCSV:
     def __init__(self, series_dir):
@@ -33,7 +33,7 @@ class SeriesLoaderFromCSV:
         return name
     
 class MappingLoadersFromCSV:
-    def __init__(self, loader_object:LoaderCSVFilesObject):
+    def __init__(self, loader_object:CSVFilesObject):
         self.loader_object = loader_object
         self.file_paths = self.loader_object.get_valid_paths()
 

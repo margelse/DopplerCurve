@@ -87,7 +87,7 @@ class PipelineLoader: # добавить аннотацию о работе це
         parametres = tags_section['parametres']
         bound_parametres = tags_section['bounds']
 
-        return func, mapping, parametres, bound_parametres
+        return section_title, func, mapping, parametres, bound_parametres
 
     def _get_local_mapping(self, bounds):
         x = (self.series_time).get_x()

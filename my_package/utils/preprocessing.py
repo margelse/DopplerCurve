@@ -28,7 +28,7 @@ class MinMaxNormalizeForMappings:
     def normalize(self):
         if not self.mapping.condition_normalize:
             dependent_v = (self.mapping).get_y()
-            dependent_normalize_v = (dependent_v - self.min_value) / (self.max_values - self.min_value)
+            dependent_normalize_v = (dependent_v - self.min_value) / (self.max_value - self.min_value)
 
             return Mapping((self.mapping).get_x(), dependent_normalize_v, True)
         

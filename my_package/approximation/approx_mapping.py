@@ -10,6 +10,7 @@ from ..data_structurs.base import Mapping
 from ..data_structurs.approximation import ResultsApproximatingFunction
 from ..utils.preprocessing import MappingPreprocessingForApproximation
 from ..utils.visualization import VisualizationPlots
+from ..utils.loaders import PipelineLoader
     
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -27,10 +28,19 @@ def preprocessing_pipeline(mapping:Mapping):
 
     return mapping_result
 
-# def _normalize_values(values):
-#     normalize_func = MinMaxNormalize(values)
-#     normalize_y = normalize_func.normalize()
-#     return normalize_y
+def run_pipeline(pipeline_loader:PipelineLoader):
+    result = []
+    for name_node, func, mapping, parametres, bounds in pipeline_loader:
+        try:
+            approx = search_most_viable_parametres(func, mapping, parametres, bounds)
+
+        except Exception as e:
+            print(f'ERRORS IN {name_node}!')
+            raise(e)
+        
+        result.append(approx)
+
+    return result
 
 def search_most_viable_parametres(
         function_approximation:Callable,

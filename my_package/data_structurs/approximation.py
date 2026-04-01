@@ -1,13 +1,12 @@
 from typing import List, Tuple, Callable
-from ..utils.preprocessing import MinMaxNormalize
 from ..data_structurs.base import Mapping
 import pandas as pd
 
 class StructurePipelineApproximation:
     def __init__(
             self,
-            names_node:list,
-            functions: list,
+            names_node:List[str],
+            functions: List[Callable],
             values_sections:List[List],
             values_parametres:List[Tuple],
             bounds:List[Tuple[List]]
@@ -37,7 +36,7 @@ class StructurePipelineApproximation:
 
         return new_pipeline
     
-class ResultsApproximatingFunction(MinMaxNormalize):
+class ResultsApproximatingFunction:
     def __init__(
             self,
             mapping_start:Mapping,

@@ -53,33 +53,21 @@ class ResultsApproximatingFunction:
         self.params = parametres_function
         self.bounds_parametres = bounds_parametres
 
-        # self._check_condition_normalize()
+    def metrix_values_show(self, function_metrics:dict):
+        self._message_about_condition_normalize()
+        self._calculation_metrix(self.y_approx_denormalize, function_metrics)
 
-    # def _check_condition_normalize(self):
-    #     if (self.mapping_result).condition_normalize:
-    #         super().__init__((self.mapping_start).get_y())
+        df = self._converting_the_results_to_df(self.result_calculate)
 
-    #         self.y_approx = None
-    #         self.y_approx_denormalize = self.denormalize((self.mapping_result).get_y())
-    #     else:
-    #         self.y_approx = (self.mapping_result).get_y()
-    #         self.y_approx_denormalize = None
-
-    # def metrix_values_show(self, function_metrics:dict):
-    #     if self.y_approx_denormalize is not None:
-    #         self._calculation_metrix(self.y_approx_denormalize, function_metrics)
-
-    #     else:
-    #         self._calculation_metrix(self.y_approx, function_metrics)
-
-    #     df = self._converting_the_results_to_df(self.result_calculate)
-
-    #     return df
+        return df
     
-    # def _calculation_metrix(self, y_approx, function_metrics:dict):
-    #     self.result_calculate = [
-    #         {name: func((self.mapping_start).get_y(), y_approx) for name, func in function_metrics.items()}
-    #     ]
+    def _calculation_metrix(self, function_metrics:dict):
+        self.result_calculate = [
+            {name: func_metrix((self.mapping_start).get_y(), (self.mapping_result).get_y()) for name, func_metrix in function_metrics.items()}
+        ]
+
+    def _message_about_condition_normalize(self):
+        print(f'Condition normalize = {self.mapping_result.condition_normalize}')
 
     def parametres_show(self):
         name_args = self._get_name_parametres_from_function()

@@ -31,16 +31,15 @@ class VisualizationPlots:
 
     def create_plot_result_approx(
             self, 
-            structure_result_approx:List[ResultsApproximatingFunction], 
+            structure_result_approx:ResultsApproximatingFunction, 
             labels:List[str]
     ):
-        mappings = []
+        mappings_from_result = [
+            structure_result_approx.mapping_start,
+            structure_result_approx.mapping_result
+        ]
 
-        for result_approx in structure_result_approx:
-            mappings.append(result_approx.mapping_start)
-            mappings.append(result_approx.mapping_result)
-
-        self.create_plot_mapping(mappings, labels)
+        self.create_plot_mapping(mappings_from_result, labels)
 
     def create_plot(self, x:List, y:List, labels:List[str]):
         fig, ax = plt.subplots(figsize=self.figsize)

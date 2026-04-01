@@ -1,5 +1,5 @@
 from .approx_mapping import preprocessing_pipeline, search_most_viable_parametres, \
-get_description_about_results_approximation, print_plots_results, uniform_filter1d_for_mapping
+get_description_about_results_approximation, print_plots_results, uniform_filter1d_for_mapping, run_pipeline
 from .functions_for_approx import *
 
 __all__ = [
@@ -8,6 +8,7 @@ __all__ = [
     'get_description_about_results_approximation',
     'print_plots_results',
     'uniform_filter1d_for_mapping',
+    'run_pipeline',
     'lognormal_distribution', # from functions_for_approx.py
     'inverse_exponential',
     'normal_distribution',

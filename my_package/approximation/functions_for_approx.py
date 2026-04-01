@@ -37,7 +37,7 @@ def inverse_exponential(x, coef_peak, b, free_term):
 
     return inverse_exp + free_term
 
-def normal_distribution(x, coef_peak, mu, sigma, free_term):
+def normal_distribution(x, coef_peak, sigma, mu, free_term):
     norm_distrib = coef_peak * (np.exp(-((x - mu)**2) / (2 * sigma**2)) / (sigma * np.sqrt(2 * np.pi)))
 
     return norm_distrib + free_term
@@ -75,8 +75,8 @@ def lognormal_distribution_with_normal_distrib(
         sigma, 
         mu, 
         coef_norm_distrib_peak, 
-        b, 
-        d, 
+        sigma2, 
+        mu2,
         free_term
 ):
 
@@ -86,7 +86,7 @@ def lognormal_distribution_with_normal_distrib(
     denominator = x * sigma * np.sqrt(2 * np.pi)
     lognorm_distrib = coef_lognormal_peak * numerator / denominator
 
-    norm_distrib = coef_norm_distrib_peak * np.exp(-(x - b)**2 / d**2)
+    norm_distrib = coef_norm_distrib_peak * np.exp(-(x - mu2)**2 / sigma2**2)
 
     return lognorm_distrib + norm_distrib + free_term
 
@@ -96,10 +96,10 @@ def lognormal_distribution_with_normal_distrib_and_inverse_exponential(
         sigma,
         mu,
         coef_norm_distrib_peak,
-        b, 
-        d,
+        sigma2,
+        mu2, 
         coef_inverse_exp_peak,
-        g,
+        b,
         free_term
 ):
     
@@ -109,9 +109,9 @@ def lognormal_distribution_with_normal_distrib_and_inverse_exponential(
     denominator = x * sigma * np.sqrt(2 * np.pi)
     lognorm_distrib = coef_lognormal_peak * numerator / denominator
 
-    norm_distrib = coef_norm_distrib_peak * np.exp(-(x - b)**2 / d**2)
+    norm_distrib = coef_norm_distrib_peak * np.exp(-(x - mu2)**2 / sigma2**2)
 
-    inverse_exp = coef_inverse_exp_peak / (g + np.exp(x))
+    inverse_exp = coef_inverse_exp_peak / (b + np.exp(x))
 
     return lognorm_distrib + norm_distrib - inverse_exp + free_term
 

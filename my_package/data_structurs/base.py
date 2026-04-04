@@ -16,3 +16,6 @@ class Mapping:
     
     def get_y(self):
         return np.copy(self.dependent_var)
+    
+    def get_domain_definition(self):
+        return [self.independent_var[0], self.independent_var[-1]]

@@ -55,7 +55,7 @@ class ResultsApproximatingFunction:
 
     def metrix_values_show(self, function_metrics:dict):
         self._message_about_condition_normalize()
-        self._calculation_metrix(self.y_approx_denormalize, function_metrics)
+        self._calculation_metrix(function_metrics)
 
         df = self._converting_the_results_to_df(self.result_calculate)
 

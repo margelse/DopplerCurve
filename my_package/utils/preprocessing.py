@@ -127,8 +127,8 @@ def _get_directions_for_mapping(mapping:Mapping, size_window:int):
 
     return directions
 
-def loader_values_border_parts(mapping:Mapping, extreme_points_idx:list, count_parts:int, rotate_idx:int):
-    nodes_for_approximation = _create_nodes_for_approximation(mapping, extreme_points_idx, count_parts, rotate_idx)
+def loader_values_border_parts(mapping:Mapping, extreme_points_idx:list, count_parts:int):
+    nodes_for_approximation = _create_nodes_for_approximation(mapping, extreme_points_idx, count_parts)
 
     for section in range(0, len(nodes_for_approximation) - 1, 2):
         parts = []
@@ -137,30 +137,30 @@ def loader_values_border_parts(mapping:Mapping, extreme_points_idx:list, count_p
 
         yield parts
 
-def _create_nodes_for_approximation(mapping:Mapping, extreme_points_idx:list, count_parts:int, rotate_idx:int):
+def _create_nodes_for_approximation(mapping:Mapping, extreme_points_idx:list, count_parts:int):
     COUNT_BASE_NODE_IN_SECTION = 1
     sections = _slice_mapping_on_sections(mapping, extreme_points_idx)
     all_nodes_for_parts = []
 
     for i, section in enumerate(sections):
         count_points_section = _calculate_count_points_for_section(section)
-        step_node = count_points_section // (count_parts - 1)
+        step_node = count_points_section // count_parts
 
         local_parts_nodes = []
+
+        if i == len(sections) - 1:
+            i += 1
 
         if i % 2 == 0:
             left_border = section[0]
             local_parts_nodes.append(left_border)
-            for count in range(1, count_parts - COUNT_BASE_NODE_IN_SECTION):
+            for count in range(COUNT_BASE_NODE_IN_SECTION, count_parts):
                 local_parts_nodes.append(left_border + count * step_node)
-            
-            right_border = section[1]
-            local_parts_nodes.append(right_border - rotate_idx)
+
 
         else:
             left_border = section[0]
-            local_parts_nodes.append(left_border + rotate_idx)
-            for count in range(1, count_parts - COUNT_BASE_NODE_IN_SECTION):
+            for count in range(COUNT_BASE_NODE_IN_SECTION, count_parts):
                 local_parts_nodes.append(left_border + count * step_node)
 
             right_border = section[1]

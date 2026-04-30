@@ -27,7 +27,7 @@ class VisualizationPlots:
             x_list.append(mapp.get_x())
             y_list.append(mapp.get_y())
 
-        self.create_plot(x_list, y_list, labels)
+        return self.create_plot(x_list, y_list, labels)
 
     def create_plot_result_approx(
             self, 
@@ -39,7 +39,7 @@ class VisualizationPlots:
             structure_result_approx.mapping_result
         ]
 
-        self.create_plot_mapping(mappings_from_result, labels)
+        return self.create_plot_mapping(mappings_from_result, labels)
 
     def create_plot(self, x:List, y:List, labels:List[str]):
         fig, ax = plt.subplots(figsize=self.figsize)
@@ -49,3 +49,5 @@ class VisualizationPlots:
 
         self._add_parametres_plot(ax)
         plt.show()
+
+        return fig

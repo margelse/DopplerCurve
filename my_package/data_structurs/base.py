@@ -11,11 +11,19 @@ class Mapping:
         self.dependent_var = dependent_var
         self.condition_normalize = condition_normalize
 
+        self.shape = (len(independent_var), len(dependent_var))
+
     def get_x(self):
         return np.copy(self.independent_var)
     
     def get_y(self):
         return np.copy(self.dependent_var)
+    
+    def get_x_values_from_idx(self, idx):
+        return self.independent_var[idx]
+    
+    def get_y_values_from_idx(self, idx):
+        return self.dependent_var[idx]
     
     def get_domain_definition(self):
         return [self.independent_var[0], self.independent_var[-1]]

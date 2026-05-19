@@ -46,7 +46,7 @@ class CSVFilesObject:
     def get_valid_paths(self):
         return (self.valid_file_paths).copy()
     
-    def description(self):
+    def description(self): # Через TEMPLATE можно изменять поля класса!? Так быть не должно
         TEMPLATE = {
             'directory': self.directory,
             'sorted file paths': self.valid_file_paths,

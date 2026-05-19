@@ -27,3 +27,7 @@ class Mapping:
     
     def get_domain_definition(self):
         return [self.independent_var[0], self.independent_var[-1]]
+    
+    def add_point(self, point:tuple, idx:int=0):
+        self.independent_var[idx] = point[0]
+        self.dependent_var[idx] = point[1]

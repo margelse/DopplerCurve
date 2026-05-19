@@ -109,7 +109,7 @@ def get_idx_extreme_points(mapping:Mapping, size_window:int):
     extreme_idx = []
 
     for idx in range(len(directions) - 1):
-        if directions[idx] * directions[idx + 1] <= 0:
+        if directions[idx] * directions[idx + 1] < 0:
             extreme_idx.append((idx + 1) * size_window)
 
     return extreme_idx
@@ -127,8 +127,10 @@ def _get_directions_for_mapping(mapping:Mapping, size_window:int):
 
     return directions
 
+# --------------- Первый способ разбиения - на выходе непрерывные значения параметров ---------------
+
 def loader_values_border_parts(mapping:Mapping, extreme_points_idx:list, count_parts:int):
-    nodes_for_approximation = _create_nodes_for_approximation(mapping, extreme_points_idx, count_parts)
+    nodes_for_approximation = _create_nodes_for_parts(mapping, extreme_points_idx, count_parts)
 
     for section in range(0, len(nodes_for_approximation) - 1, 2):
         parts = []
@@ -137,32 +139,30 @@ def loader_values_border_parts(mapping:Mapping, extreme_points_idx:list, count_p
 
         yield parts
 
-def _create_nodes_for_approximation(mapping:Mapping, extreme_points_idx:list, count_parts:int):
-    COUNT_BASE_NODE_IN_SECTION = 1
+def _create_nodes_for_parts(mapping:Mapping, extreme_points_idx:list, count_parts:int):
     sections = _slice_mapping_on_sections(mapping, extreme_points_idx)
+    count_sections = len(sections)
+
     all_nodes_for_parts = []
 
     for i, section in enumerate(sections):
-        count_points_section = _calculate_count_points_for_section(section)
-        step_node = count_points_section // count_parts
-
         local_parts_nodes = []
 
-        if i == len(sections) - 1:
-            i += 1
+        if i == (count_sections - 1):
+            local_parts_nodes.extend(_calculate_nodes_for_section(section, count_parts))
+            right_border = section[1]
+            local_parts_nodes.append(right_border)
+            all_nodes_for_parts.append(local_parts_nodes)
+
+            break
 
         if i % 2 == 0:
             left_border = section[0]
             local_parts_nodes.append(left_border)
-            for count in range(COUNT_BASE_NODE_IN_SECTION, count_parts):
-                local_parts_nodes.append(left_border + count * step_node)
-
+            local_parts_nodes.extend(_calculate_nodes_for_section(section, count_parts))
 
         else:
-            left_border = section[0]
-            for count in range(COUNT_BASE_NODE_IN_SECTION, count_parts):
-                local_parts_nodes.append(left_border + count * step_node)
-
+            local_parts_nodes.extend(_calculate_nodes_for_section(section, count_parts))
             right_border = section[1]
             local_parts_nodes.append(right_border)
         
@@ -185,6 +185,19 @@ def _slice_mapping_on_sections(mapping:Mapping, extreme_points_idx:list)->list:
 
     return sections
 
+def _calculate_nodes_for_section(section:list, count_parts:int):
+    COUNT_BASE_NODE_IN_SECTION = 1
+
+    local_parts_nodes = []
+
+    count_points_section = _calculate_count_points_for_section(section)
+    step_node = count_points_section // count_parts
+
+    left_border = section[0]
+    for count in range(COUNT_BASE_NODE_IN_SECTION, count_parts):
+        local_parts_nodes.append(left_border + count * step_node)
+
+    return local_parts_nodes
 
 def _calculate_count_points_for_section(idx_borders_section:list):
     return idx_borders_section[1] - idx_borders_section[0]
